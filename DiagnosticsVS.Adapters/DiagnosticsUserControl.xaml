@@ -1,0 +1,72 @@
+<UserControl x:Class="DiagnosticsVS.Adapters.DiagnosticsUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:toolkit="clr-namespace:Community.VisualStudio.Toolkit;assembly=Community.VisualStudio.Toolkit"
+             xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+             d:DesignHeight="300" d:DesignWidth="300"
+			 mc:Ignorable="d"
+			 toolkit:Themes.UseVsTheme="True"
+			 Loaded="UserControl_Loaded">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid Grid.Row="0" Margin="8 8 16 0">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <Label
+                    Content="_Environment"
+                    Target="{Binding ElementName=EnvironmentSelector}"
+                    VerticalAlignment="Center"
+                />
+                <ComboBox
+                    x:Name="EnvironmentSelector"
+                    AutomationProperties.Name="Select environment"
+                    DisplayMemberPath="Key"
+                    MinWidth="200"
+                    SelectedValuePath="Value"
+                    Width="Auto"
+                    SelectionChanged="EnvironmentSelector_SelectionChanged"
+                />
+            </StackPanel>
+			<Border Grid.Column="1"/>
+			<StackPanel Grid.Column="2" Orientation="Horizontal">
+                <Label
+                    Content="E_xtension"
+                    Target="{Binding ElementName=ExtensionSelector}"
+                    VerticalAlignment="Center"
+                />
+                <ComboBox
+                    x:Name="ExtensionSelector"
+                    AutomationProperties.Name="Select extension"
+                    DisplayMemberPath="Value"
+                    MinWidth="200"
+                    SelectedValuePath="Key"
+                    Width="Auto"
+                    SelectionChanged="ExtensionSelector_SelectionChanged"
+                />
+            </StackPanel>
+        </Grid>
+        <wv2:WebView2
+            x:Name="ExtensionDisplay"
+            Grid.Row="1"
+            HorizontalAlignment="Stretch"
+			Margin="8"
+            MinHeight="200"
+            MinWidth="200"
+            Source="about:blank"
+            VerticalAlignment="Stretch"
+        >
+            <wv2:WebView2.CreationProperties>
+                <wv2:CoreWebView2CreationProperties UserDataFolder="C:\TEMP" />
+            </wv2:WebView2.CreationProperties>
+        </wv2:WebView2>
+	</Grid>
+</UserControl>

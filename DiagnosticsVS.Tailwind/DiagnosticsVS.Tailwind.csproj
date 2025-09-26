@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <!--
+    This project is a thin wrapper to build Tailwind CSS assets using npm.
+    By default the Tailwind build step is disabled. Enable it by passing
+    -p:RunTailwindBuild=true to MSBuild / dotnet build / Visual Studio.
+
+    Example (CLI):
+      dotnet build DiagnosticsVS.Tailwind/DiagnosticsVS.Tailwind.csproj -p:RunTailwindBuild=true
+  -->
+
+  <Target Name="BuildTailwindCss" BeforeTargets="BeforeBuild" Condition="'$(RunTailwindBuild)' == 'true'">
+    <!-- Install node dependencies if node_modules is missing (Windows cmd conditional) -->
+    <Exec Command="cmd /c if not exist node_modules (npm ci)" WorkingDirectory="$(MSBuildProjectDirectory)" />
+    <!-- Run the build script defined in package.json -->
+    <Exec Command="npm run build:css" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+  <!-- Optionally include the generated CSS as content in this project output -->
+  <ItemGroup>
+    <None Include="dist\**\*" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+/* plugins: ["@tailwindcss/typography"] */
+@plugin "@tailwindcss/typography";
+
+/* sources: ["./index.html"] */
+@source "./index.html";
+
+/* darkMode: "class" */
+@custom-variant dark (&:where(.dark, .dark *));

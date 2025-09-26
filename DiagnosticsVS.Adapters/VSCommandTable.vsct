@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h"/>
+  <Extern href="vsshlids.h"/>
+
+  <Commands package="guidDiagnosticsVSPackage">
+    <Groups>
+      <Group guid="guidDiagnosticsVSPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS"/>
+      </Group>
+    </Groups>
+
+    <Buttons>
+      <Button guid="guidDiagnosticsVSPackageCmdSet" id="DiagnosticsCommandId" priority="0x0100" type="Button">
+        <Parent guid="guidDiagnosticsVSPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidImages" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Show Azure Extensions</ButtonText>
+        </Strings>
+      </Button>
+    </Buttons>
+
+    <Bitmaps>
+      <Bitmap guid="guidImages" href="Resources\DiagnosticsCommand.png" usedList="bmpPic1"/>
+    </Bitmaps>
+  </Commands>
+
+  <Symbols>
+    <GuidSymbol name="guidDiagnosticsVSPackage" value="{119A918A-FFDB-48CE-BBC7-A232F37F3BC2}" />
+
+    <GuidSymbol name="guidDiagnosticsVSPackageCmdSet" value="{8E9A845E-4E45-4C68-8A31-36554B58382E}">
+      <IDSymbol name="MyMenuGroup" value="0x1020" />
+      <IDSymbol name="DiagnosticsCommandId" value="0x0100" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImages" value="{F18F898E-9E0B-4395-9254-40771EA07D2D}" >
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+  </Symbols>
+</CommandTable>
