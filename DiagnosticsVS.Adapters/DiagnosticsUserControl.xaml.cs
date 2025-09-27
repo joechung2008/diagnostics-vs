@@ -2,6 +2,7 @@ using DiagnosticsVS.Core.Models;
 using DiagnosticsVS.Core.Rendering;
 using DiagnosticsVS.Core.Services;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,9 @@ namespace DiagnosticsVS.Adapters
     {
         // Keep the currently fetched extensions so callers can look up by extension key.
         private IReadOnlyDictionary<string, ExtensionBase> _currentExtensions;
+
+        // Keep track of the currently displayed extension for theme changes
+        private ExtensionBase _currentlyDisplayedExtension;
 
         public DiagnosticsUserControl()
         {
@@ -57,11 +61,12 @@ namespace DiagnosticsVS.Adapters
 
             if (extension != null)
             {
+                _currentlyDisplayedExtension = extension;
                 DisplayExtensionAsync(extension).FireAndForget();
             }
             else
             {
-                ExtensionDisplay.Visibility = Visibility.Hidden;
+                _currentlyDisplayedExtension = null;
             }
         }
 
@@ -69,17 +74,44 @@ namespace DiagnosticsVS.Adapters
         {
             try
             {
-                ExtensionDisplay.Visibility = Visibility.Visible;
-             
+                // Get VS theme colors
+                var textColor = VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowTextColorKey);
+                var strongTextColor = VSColorTheme.GetThemedColor(EnvironmentColors.CommandBarTextActiveColorKey);
+                var mutedTextColor = VSColorTheme.GetThemedColor(EnvironmentColors.CommandBarTextInactiveColorKey);
+                var disabledTextColor = VSColorTheme.GetThemedColor(EnvironmentColors.BrandedUITextColorKey);
+                var accentColor = VSColorTheme.GetThemedColor(EnvironmentColors.AccentBorderColorKey);
+                var borderColor = VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBorderColorKey);
+                var surfaceColor = VSColorTheme.GetThemedColor(EnvironmentColors.CommandBarGradientBeginColorKey);
+
+                // Convert to CSS color strings
+                string ToCssColor(System.Drawing.Color color) =>
+                    $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+
+                // Create theme colors dictionary
+                var themeColors = new Dictionary<string, string>
+                {
+                    ["vs-text"] = ToCssColor(textColor),
+                    ["vs-text-strong"] = ToCssColor(strongTextColor),
+                    ["vs-text-muted"] = ToCssColor(mutedTextColor),
+                    ["vs-text-disabled"] = ToCssColor(disabledTextColor),
+                    ["vs-accent"] = ToCssColor(accentColor),
+                    ["vs-border"] = ToCssColor(borderColor),
+                    ["vs-surface"] = ToCssColor(surfaceColor)
+                };
+
+                // Render HTML with theme colors
                 var content = HtmlRenderer.RenderExtensionContent(extension);
-                var html = HtmlRenderer.RenderFullHtml(content);
+                var html = HtmlRenderer.RenderFullHtml(content, themeColors);
+
                 await ExtensionDisplay.EnsureCoreWebView2Async(null);
+                ExtensionDisplay.Visibility = Visibility.Visible;
                 ExtensionDisplay.NavigateToString(html);
             }
             catch (Exception ex)
             {
+                await ExtensionDisplay.EnsureCoreWebView2Async(null);
                 ExtensionDisplay.Visibility = Visibility.Hidden;
-            
+
                 MessageBox.Show(
                     messageBoxText: $"Failed to render extension: {ex.Message}",
                     caption: "Rendering Error",
@@ -92,6 +124,17 @@ namespace DiagnosticsVS.Adapters
         private async Task EnsureCoreWebView2Async()
         {
             await ExtensionDisplay.EnsureCoreWebView2Async(null);
+
+            VSColorTheme.ThemeChanged += OnThemeChanged;
+        }
+
+        private void OnThemeChanged(ThemeChangedEventArgs e)
+        {
+            // Re-display current extension with new theme
+            if (_currentlyDisplayedExtension != null)
+            {
+                DisplayExtensionAsync(_currentlyDisplayedExtension).FireAndForget();
+            }
         }
 
         private async Task FetchDiagnosticsAndPopulateExtensionsAsync(string url)
