@@ -11,6 +11,7 @@
   "private": true,
   "scripts": {
     "build:css": "npx @tailwindcss/cli -i ./styles/tailwind.css -o ./dist/tailwind.css --minify",
+    "build:cs": "node ./scripts/generate-htmlrenderer-tailwind.js",
     "format": "prettier --write .",
     "watch:css": "npx @tailwindcss/cli -i ./styles/tailwind.css -o ./dist/tailwind.css --watch"
   },

@@ -30,6 +30,6 @@
 }
 
 body {
-  background-color: transparent;
+  background-color: var(--vs-surface);
   color: var(--vs-text);
 }

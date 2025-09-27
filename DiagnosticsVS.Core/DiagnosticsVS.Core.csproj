@@ -21,4 +21,13 @@
     <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
+  <!-- Include generated partial for HtmlRenderer and nest under HtmlRenderer.cs in IDE without duplicating Compile items -->
+  <ItemGroup>
+    <Compile Update="Rendering\HtmlRenderer.g.cs">
+      <DependentUpon>HtmlRenderer.cs</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+  </ItemGroup>
+
 </Project>
