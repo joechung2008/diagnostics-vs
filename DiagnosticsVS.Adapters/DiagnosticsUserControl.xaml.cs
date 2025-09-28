@@ -56,7 +56,7 @@ namespace DiagnosticsVS.Adapters
             ExtensionBase extension = null;
             if (!string.IsNullOrWhiteSpace(selectedValue))
             {
-                _currentExtensions.TryGetValue(selectedValue, out extension);
+                _currentExtensions?.TryGetValue(selectedValue, out extension);
             }
 
             if (extension != null)
@@ -103,13 +103,11 @@ namespace DiagnosticsVS.Adapters
                 var content = HtmlRenderer.RenderExtensionContent(extension);
                 var html = HtmlRenderer.RenderFullHtml(content, themeColors);
 
-                await ExtensionDisplay.EnsureCoreWebView2Async(null);
                 ExtensionDisplay.Visibility = Visibility.Visible;
                 ExtensionDisplay.NavigateToString(html);
             }
             catch (Exception ex)
             {
-                await ExtensionDisplay.EnsureCoreWebView2Async(null);
                 ExtensionDisplay.Visibility = Visibility.Hidden;
 
                 MessageBox.Show(

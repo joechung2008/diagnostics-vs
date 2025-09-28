@@ -262,3 +262,6 @@ ClientBin/
 
 # Exclude .claude files to prevent secrets from leaking
 *.claude
+
+# JetBrains Rider
+.idea/
