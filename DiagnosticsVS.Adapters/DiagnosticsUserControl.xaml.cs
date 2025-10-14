@@ -62,7 +62,7 @@ namespace DiagnosticsVS.Adapters
             if (extension != null)
             {
                 _currentlyDisplayedExtension = extension;
-                DisplayExtensionAsync(extension).FireAndForget();
+                DisplayExtension(extension);
             }
             else
             {
@@ -70,7 +70,7 @@ namespace DiagnosticsVS.Adapters
             }
         }
 
-        private async Task DisplayExtensionAsync(ExtensionBase extension)
+        private void DisplayExtension(ExtensionBase extension)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace DiagnosticsVS.Adapters
             // Re-display current extension with new theme
             if (_currentlyDisplayedExtension != null)
             {
-                DisplayExtensionAsync(_currentlyDisplayedExtension).FireAndForget();
+                DisplayExtension(_currentlyDisplayedExtension);
             }
         }
 
